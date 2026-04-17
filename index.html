@@ -417,7 +417,7 @@
 
 <script>
   // Password protection
-  const PW_HASH = '1a748566f86c5d724a8c1af3dd90a3e9b21aa44b'; // SHA1 of "Ben"
+  const PW_HASH = '41126fc03289a05d86219d28b38e5e365ff0359f'; // SHA1 of "Ben"
 
   async function sha1(str) {
     const buf = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(str));
