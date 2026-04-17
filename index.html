@@ -338,95 +338,36 @@
     <div class="progress-fill" id="progress"></div>
   </div>
 
-  <!-- Step 1: Aufgabe -->
+  <!-- Step 1: Was soll passieren -->
   <div class="step active" id="step-1">
-    <div class="step-label">Schritt 1 von 7</div>
+    <div class="step-label">Schritt 1 von 4</div>
     <h2>Was soll Claude für dich tun?</h2>
-    <p class="hint">Beschreibe die Aufgabe so konkret wie möglich.</p>
-    <textarea id="q1" placeholder="z.B. Schreibe mir einen LinkedIn Post über mein neues Angebot als Energieberater…"></textarea>
+    <p class="hint">Schreib einfach drauf los — so wie du es einem Freund erklären würdest.</p>
+    <textarea id="q1" placeholder="z.B. Ich brauche einen Text für meine Website, der erklärt was ich als Energieberater anbiete. Oder: Hilf mir eine E-Mail an meinen Vermieter zu schreiben wegen einer Nebenkostenabrechnung die ich nicht verstehe."></textarea>
   </div>
 
-  <!-- Step 2: Rolle -->
+  <!-- Step 2: Wer liest das -->
   <div class="step" id="step-2">
-    <div class="step-label">Schritt 2 von 7</div>
-    <h2>Als was soll Claude auftreten?</h2>
-    <p class="hint">Wähle eine Rolle oder gib eine eigene ein.</p>
-    <div class="options" id="q2-options">
-      <div class="option" data-value="Experte">Experte</div>
-      <div class="option" data-value="Texter / Copywriter">Texter / Copywriter</div>
-      <div class="option" data-value="Coach / Berater">Coach / Berater</div>
-      <div class="option" data-value="Lehrer / Erklärer">Lehrer / Erklärer</div>
-      <div class="option" data-value="Assistent">Assistent</div>
-      <div class="option" data-value="Kritiker / Reviewer">Kritiker / Reviewer</div>
-    </div>
-    <input type="text" id="q2-custom" placeholder="Eigene Rolle eingeben…" style="margin-top: 12px;" />
+    <div class="step-label">Schritt 2 von 4</div>
+    <h2>Wer soll das am Ende lesen oder nutzen?</h2>
+    <p class="hint">Muss nicht perfekt sein — ein grober Hinweis reicht.</p>
+    <textarea id="q2" placeholder="z.B. Meine Kunden, die wenig Ahnung von Technik haben. Oder: Nur für mich, ich will das selbst verstehen. Oder: Wird auf Instagram gepostet, Leute zwischen 25 und 40."></textarea>
   </div>
 
-  <!-- Step 3: Zielgruppe -->
+  <!-- Step 3: Stimmung & Stil -->
   <div class="step" id="step-3">
-    <div class="step-label">Schritt 3 von 7</div>
-    <h2>Für wen ist das Ergebnis?</h2>
-    <p class="hint">Wer liest oder nutzt den Output?</p>
-    <div class="options" id="q3-options">
-      <div class="option" data-value="für mich persönlich">Für mich</div>
-      <div class="option" data-value="für Kunden">Für Kunden</div>
-      <div class="option" data-value="für Social Media (LinkedIn, Instagram etc.)">Für Social Media</div>
-      <div class="option" data-value="für Kollegen / intern">Für Kollegen / intern</div>
-      <div class="option" data-value="für die Familie">Für die Familie</div>
-      <div class="option" data-value="für alle / allgemein">Allgemein</div>
-    </div>
+    <div class="step-label">Schritt 3 von 4</div>
+    <h2>Wie soll es sich anfühlen?</h2>
+    <p class="hint">Ton, Stil, Länge — alles was dir wichtig ist. Oder lass das Feld frei.</p>
+    <textarea id="q3" placeholder="z.B. Kurz und direkt, kein Fachchinesisch. Oder: Locker und persönlich, als würde ich selbst schreiben. Oder: Sehr ausführlich, ich will alle Infos haben." style="min-height: 100px;"></textarea>
   </div>
 
-  <!-- Step 4: Format -->
+  <!-- Step 4: Kontext -->
   <div class="step" id="step-4">
-    <div class="step-label">Schritt 4 von 7</div>
-    <h2>In welchem Format soll die Ausgabe sein?</h2>
-    <p class="hint">Mehrere Antworten möglich.</p>
-    <div class="options multi" id="q4-options">
-      <div class="option multi" data-value="als Fließtext">Fließtext</div>
-      <div class="option multi" data-value="als Stichpunkte / Bullet Points">Stichpunkte</div>
-      <div class="option multi" data-value="als E-Mail">E-Mail</div>
-      <div class="option multi" data-value="als Social Media Post">Social Media Post</div>
-      <div class="option multi" data-value="als Tabelle">Tabelle</div>
-      <div class="option multi" data-value="als Schritt-für-Schritt Anleitung">Schritt-für-Schritt</div>
-      <div class="option multi" data-value="als strukturiertes Dokument">Strukturiertes Dokument</div>
-      <div class="option multi" data-value="in beliebigem Format">Egal / freies Format</div>
-    </div>
-  </div>
-
-  <!-- Step 5: Ton -->
-  <div class="step" id="step-5">
-    <div class="step-label">Schritt 5 von 7</div>
-    <h2>Wie soll es klingen?</h2>
-    <p class="hint">Wähle den passenden Ton für den Output.</p>
-    <div class="options" id="q5-options">
-      <div class="option" data-value="professionell und seriös">Professionell</div>
-      <div class="option" data-value="locker, nahbar und direkt (duzen)">Locker & Direkt</div>
-      <div class="option" data-value="sachlich und nüchtern">Sachlich</div>
-      <div class="option" data-value="kreativ und inspirierend">Kreativ</div>
-      <div class="option" data-value="empathisch und verständnisvoll">Empathisch</div>
-      <div class="option" data-value="humorvoll und leicht">Humorvoll</div>
-    </div>
-  </div>
-
-  <!-- Step 6: Länge -->
-  <div class="step" id="step-6">
-    <div class="step-label">Schritt 6 von 7</div>
-    <h2>Wie lang soll der Output sein?</h2>
-    <div class="options" id="q6-options">
-      <div class="option" data-value="sehr kurz (1–3 Sätze)">Sehr kurz</div>
-      <div class="option" data-value="mittel (1 Absatz)">Mittel</div>
-      <div class="option" data-value="ausführlich (mehrere Absätze)">Ausführlich</div>
-      <div class="option" data-value="so lang wie nötig">So lang wie nötig</div>
-    </div>
-  </div>
-
-  <!-- Step 7: Kontext + Besonderheiten -->
-  <div class="step" id="step-7">
-    <div class="step-label">Schritt 7 von 7</div>
-    <h2>Noch wichtige Details? <span class="optional-tag">optional</span></h2>
-    <p class="hint">Hintergrund-Infos, was unbedingt rein soll oder vermieden werden.</p>
-    <textarea id="q7" placeholder="z.B. Ich bin Energieberater mit Handwerker-Hintergrund. Kein Fachchinesisch. Nicht länger als 300 Wörter…" style="min-height: 120px;"></textarea>
+    <div class="step-label">Schritt 4 von 4</div>
+    <h2>Noch etwas, das Claude wissen sollte? <span class="optional-tag">optional</span></h2>
+    <p class="hint">Hintergrund, Besonderheiten, was unbedingt rein soll oder vermieden werden.</p>
+    <textarea id="q4" placeholder="z.B. Ich bin selbstständiger Energieberater aus dem Handwerk, kein Akademiker. Bitte keine Floskeln. Das Ergebnis soll maximal 200 Wörter lang sein." style="min-height: 120px;"></textarea>
   </div>
 
   <!-- Result -->
@@ -477,7 +418,7 @@
     document.getElementById('lock-screen').classList.add('hidden');
   }
 
-  const TOTAL = 7;
+  const TOTAL = 4;
   let current = 1;
   const answers = {};
 
@@ -490,54 +431,19 @@
     const backBtn = document.getElementById('btn-back');
     const nextBtn = document.getElementById('btn-next');
     backBtn.style.display = current > 1 ? 'block' : 'none';
-
-    if (current === TOTAL) {
-      nextBtn.textContent = 'Prompt generieren ✨';
-    } else {
-      nextBtn.textContent = 'Weiter →';
-    }
-
-    // Disable next if required field empty
+    nextBtn.textContent = current === TOTAL ? 'Prompt generieren ✨' : 'Weiter →';
     nextBtn.disabled = !canProceed();
   }
 
   function canProceed() {
     if (current === 1) return document.getElementById('q1').value.trim().length > 0;
-    if (current === 2) {
-      const selected = document.querySelector('#q2-options .option.selected');
-      const custom = document.getElementById('q2-custom').value.trim();
-      return selected || custom.length > 0;
-    }
-    if (current === 3) return document.querySelector('#q3-options .option.selected');
-    if (current === 4) return document.querySelectorAll('#q4-options .option.selected').length > 0;
-    if (current === 5) return document.querySelector('#q5-options .option.selected');
-    if (current === 6) return document.querySelector('#q6-options .option.selected');
-    if (current === 7) return true;
+    if (current === 2) return document.getElementById('q2').value.trim().length > 0;
     return true;
   }
 
-  // Single-select options
-  ['q2-options', 'q3-options', 'q5-options', 'q6-options'].forEach(id => {
-    document.getElementById(id)?.querySelectorAll('.option').forEach(opt => {
-      opt.addEventListener('click', () => {
-        document.getElementById(id).querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
-        opt.classList.add('selected');
-        updateNav();
-      });
-    });
+  ['q1', 'q2', 'q3', 'q4'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', updateNav);
   });
-
-  // Multi-select options
-  document.getElementById('q4-options')?.querySelectorAll('.option').forEach(opt => {
-    opt.addEventListener('click', () => {
-      opt.classList.toggle('selected');
-      updateNav();
-    });
-  });
-
-  // Input listeners
-  document.getElementById('q1').addEventListener('input', updateNav);
-  document.getElementById('q2-custom').addEventListener('input', updateNav);
 
   function showStep(n) {
     document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
@@ -554,20 +460,10 @@
   }
 
   function collectAnswer() {
-    if (current === 1) answers.task = document.getElementById('q1').value.trim();
-    if (current === 2) {
-      const sel = document.querySelector('#q2-options .option.selected');
-      const custom = document.getElementById('q2-custom').value.trim();
-      answers.role = custom || sel?.dataset.value || '';
-    }
-    if (current === 3) answers.audience = document.querySelector('#q3-options .option.selected')?.dataset.value || '';
-    if (current === 4) {
-      const selected = [...document.querySelectorAll('#q4-options .option.selected')].map(o => o.dataset.value);
-      answers.format = selected.join(', ');
-    }
-    if (current === 5) answers.tone = document.querySelector('#q5-options .option.selected')?.dataset.value || '';
-    if (current === 6) answers.length = document.querySelector('#q6-options .option.selected')?.dataset.value || '';
-    if (current === 7) answers.context = document.getElementById('q7').value.trim();
+    if (current === 1) answers.task     = document.getElementById('q1').value.trim();
+    if (current === 2) answers.audience = document.getElementById('q2').value.trim();
+    if (current === 3) answers.style    = document.getElementById('q3').value.trim();
+    if (current === 4) answers.context  = document.getElementById('q4').value.trim();
   }
 
   function next() {
@@ -639,10 +535,10 @@
   function restart() {
     current = 1;
     Object.keys(answers).forEach(k => delete answers[k]);
-    document.getElementById('q1').value = '';
-    document.getElementById('q2-custom').value = '';
-    document.getElementById('q7').value = '';
-    document.querySelectorAll('.option.selected').forEach(o => o.classList.remove('selected'));
+    ['q1', 'q2', 'q3', 'q4'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
     document.getElementById('nav-buttons').style.display = 'flex';
     showStep(1);
   }
