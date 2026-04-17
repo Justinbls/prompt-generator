@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prompt Generator</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0f0f0f;
+      color: #f0f0f0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 620px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .header p {
+      color: #888;
+      margin-top: 8px;
+      font-size: 0.95rem;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: #222;
+      border-radius: 2px;
+      margin-bottom: 40px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6366f1, #a855f7);
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+
+    .step {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .step.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .step-label {
+      font-size: 0.75rem;
+      color: #6366f1;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    .step h2 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+
+    .step .hint {
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 24px;
+    }
+
+    textarea, input[type="text"] {
+      width: 100%;
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      color: #f0f0f0;
+      font-size: 1rem;
+      padding: 14px 16px;
+      outline: none;
+      resize: vertical;
+      transition: border-color 0.2s;
+      font-family: inherit;
+    }
+
+    textarea:focus, input[type="text"]:focus {
+      border-color: #6366f1;
+    }
+
+    textarea { min-height: 100px; }
+
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .option {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 10px;
+      padding: 10px 18px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.15s;
+      user-select: none;
+    }
+
+    .option:hover { border-color: #6366f1; background: #1e1e2e; }
+
+    .option.selected {
+      border-color: #6366f1;
+      background: #1e1e2e;
+      color: #a5b4fc;
+    }
+
+    .option.multi.selected {
+      border-color: #a855f7;
+      background: #1e1228;
+      color: #d8b4fe;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 32px;
+    }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 12px 24px;
+      transition: all 0.15s;
+    }
+
+    .btn-next {
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      color: white;
+      flex: 1;
+    }
+
+    .btn-next:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-next:disabled { opacity: 0.4; cursor: default; transform: none; }
+
+    .btn-back {
+      background: #1a1a1a;
+      color: #888;
+      border: 1px solid #2a2a2a;
+    }
+
+    .btn-back:hover { background: #222; color: #f0f0f0; }
+
+    /* Result */
+    .result-box {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 20px;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #e0e0e0;
+      max-height: 420px;
+      overflow-y: auto;
+    }
+
+    .btn-copy {
+      background: #1a1a1a;
+      color: #a5b4fc;
+      border: 1px solid #6366f1;
+      width: 100%;
+      margin-top: 12px;
+      padding: 14px;
+      font-size: 1rem;
+    }
+
+    .btn-copy:hover { background: #1e1e2e; }
+    .btn-copy.copied { background: #14532d; color: #86efac; border-color: #86efac; }
+
+    .btn-restart {
+      background: transparent;
+      color: #666;
+      border: 1px solid #2a2a2a;
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .btn-restart:hover { color: #f0f0f0; border-color: #444; }
+
+    .optional-tag {
+      font-size: 0.75rem;
+      color: #555;
+      margin-left: 8px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>Prompt Generator</h1>
+    <p>Beantworte ein paar Fragen — wir bauen deinen Prompt.</p>
+  </div>
+
+  <div class="progress-bar">
+    <div class="progress-fill" id="progress"></div>
+  </div>
+
+  <!-- Step 1: Aufgabe -->
+  <div class="step active" id="step-1">
+    <div class="step-label">Schritt 1 von 7</div>
+    <h2>Was soll Claude für dich tun?</h2>
+    <p class="hint">Beschreibe die Aufgabe so konkret wie möglich.</p>
+    <textarea id="q1" placeholder="z.B. Schreibe mir einen LinkedIn Post über mein neues Angebot als Energieberater…"></textarea>
+  </div>
+
+  <!-- Step 2: Rolle -->
+  <div class="step" id="step-2">
+    <div class="step-label">Schritt 2 von 7</div>
+    <h2>Als was soll Claude auftreten?</h2>
+    <p class="hint">Wähle eine Rolle oder gib eine eigene ein.</p>
+    <div class="options" id="q2-options">
+      <div class="option" data-value="Experte">Experte</div>
+      <div class="option" data-value="Texter / Copywriter">Texter / Copywriter</div>
+      <div class="option" data-value="Coach / Berater">Coach / Berater</div>
+      <div class="option" data-value="Lehrer / Erklärer">Lehrer / Erklärer</div>
+      <div class="option" data-value="Assistent">Assistent</div>
+      <div class="option" data-value="Kritiker / Reviewer">Kritiker / Reviewer</div>
+    </div>
+    <input type="text" id="q2-custom" placeholder="Eigene Rolle eingeben…" style="margin-top: 12px;" />
+  </div>
+
+  <!-- Step 3: Zielgruppe -->
+  <div class="step" id="step-3">
+    <div class="step-label">Schritt 3 von 7</div>
+    <h2>Für wen ist das Ergebnis?</h2>
+    <p class="hint">Wer liest oder nutzt den Output?</p>
+    <div class="options" id="q3-options">
+      <div class="option" data-value="für mich persönlich">Für mich</div>
+      <div class="option" data-value="für Kunden">Für Kunden</div>
+      <div class="option" data-value="für Social Media (LinkedIn, Instagram etc.)">Für Social Media</div>
+      <div class="option" data-value="für Kollegen / intern">Für Kollegen / intern</div>
+      <div class="option" data-value="für die Familie">Für die Familie</div>
+      <div class="option" data-value="für alle / allgemein">Allgemein</div>
+    </div>
+  </div>
+
+  <!-- Step 4: Format -->
+  <div class="step" id="step-4">
+    <div class="step-label">Schritt 4 von 7</div>
+    <h2>In welchem Format soll die Ausgabe sein?</h2>
+    <p class="hint">Mehrere Antworten möglich.</p>
+    <div class="options multi" id="q4-options">
+      <div class="option multi" data-value="als Fließtext">Fließtext</div>
+      <div class="option multi" data-value="als Stichpunkte / Bullet Points">Stichpunkte</div>
+      <div class="option multi" data-value="als E-Mail">E-Mail</div>
+      <div class="option multi" data-value="als Social Media Post">Social Media Post</div>
+      <div class="option multi" data-value="als Tabelle">Tabelle</div>
+      <div class="option multi" data-value="als Schritt-für-Schritt Anleitung">Schritt-für-Schritt</div>
+      <div class="option multi" data-value="als strukturiertes Dokument">Strukturiertes Dokument</div>
+      <div class="option multi" data-value="in beliebigem Format">Egal / freies Format</div>
+    </div>
+  </div>
+
+  <!-- Step 5: Ton -->
+  <div class="step" id="step-5">
+    <div class="step-label">Schritt 5 von 7</div>
+    <h2>Wie soll es klingen?</h2>
+    <p class="hint">Wähle den passenden Ton für den Output.</p>
+    <div class="options" id="q5-options">
+      <div class="option" data-value="professionell und seriös">Professionell</div>
+      <div class="option" data-value="locker, nahbar und direkt (duzen)">Locker & Direkt</div>
+      <div class="option" data-value="sachlich und nüchtern">Sachlich</div>
+      <div class="option" data-value="kreativ und inspirierend">Kreativ</div>
+      <div class="option" data-value="empathisch und verständnisvoll">Empathisch</div>
+      <div class="option" data-value="humorvoll und leicht">Humorvoll</div>
+    </div>
+  </div>
+
+  <!-- Step 6: Länge -->
+  <div class="step" id="step-6">
+    <div class="step-label">Schritt 6 von 7</div>
+    <h2>Wie lang soll der Output sein?</h2>
+    <div class="options" id="q6-options">
+      <div class="option" data-value="sehr kurz (1–3 Sätze)">Sehr kurz</div>
+      <div class="option" data-value="mittel (1 Absatz)">Mittel</div>
+      <div class="option" data-value="ausführlich (mehrere Absätze)">Ausführlich</div>
+      <div class="option" data-value="so lang wie nötig">So lang wie nötig</div>
+    </div>
+  </div>
+
+  <!-- Step 7: Kontext + Besonderheiten -->
+  <div class="step" id="step-7">
+    <div class="step-label">Schritt 7 von 7</div>
+    <h2>Noch wichtige Details? <span class="optional-tag">optional</span></h2>
+    <p class="hint">Hintergrund-Infos, was unbedingt rein soll oder vermieden werden.</p>
+    <textarea id="q7" placeholder="z.B. Ich bin Energieberater mit Handwerker-Hintergrund. Kein Fachchinesisch. Nicht länger als 300 Wörter…" style="min-height: 120px;"></textarea>
+  </div>
+
+  <!-- Result -->
+  <div class="step" id="step-result">
+    <div class="step-label">Dein Prompt</div>
+    <h2>Fertig — hier ist dein Prompt</h2>
+    <p class="hint" style="margin-bottom: 16px;">Kopiere ihn direkt in Claude.</p>
+    <div class="result-box" id="result-text"></div>
+    <button class="btn-copy" id="copy-btn" onclick="copyPrompt()">Prompt kopieren</button>
+    <button class="btn-restart" onclick="restart()">Neu starten</button>
+  </div>
+
+  <div class="buttons" id="nav-buttons">
+    <button class="btn-back" id="btn-back" onclick="back()" style="display:none">Zurück</button>
+    <button class="btn-next" id="btn-next" onclick="next()">Weiter →</button>
+  </div>
+</div>
+
+<script>
+  const TOTAL = 7;
+  let current = 1;
+  const answers = {};
+
+  function updateProgress() {
+    const pct = ((current - 1) / TOTAL) * 100;
+    document.getElementById('progress').style.width = pct + '%';
+  }
+
+  function updateNav() {
+    const backBtn = document.getElementById('btn-back');
+    const nextBtn = document.getElementById('btn-next');
+    backBtn.style.display = current > 1 ? 'block' : 'none';
+
+    if (current === TOTAL) {
+      nextBtn.textContent = 'Prompt generieren ✨';
+    } else {
+      nextBtn.textContent = 'Weiter →';
+    }
+
+    // Disable next if required field empty
+    nextBtn.disabled = !canProceed();
+  }
+
+  function canProceed() {
+    if (current === 1) return document.getElementById('q1').value.trim().length > 0;
+    if (current === 2) {
+      const selected = document.querySelector('#q2-options .option.selected');
+      const custom = document.getElementById('q2-custom').value.trim();
+      return selected || custom.length > 0;
+    }
+    if (current === 3) return document.querySelector('#q3-options .option.selected');
+    if (current === 4) return document.querySelectorAll('#q4-options .option.selected').length > 0;
+    if (current === 5) return document.querySelector('#q5-options .option.selected');
+    if (current === 6) return document.querySelector('#q6-options .option.selected');
+    if (current === 7) return true;
+    return true;
+  }
+
+  // Single-select options
+  ['q2-options', 'q3-options', 'q5-options', 'q6-options'].forEach(id => {
+    document.getElementById(id)?.querySelectorAll('.option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        document.getElementById(id).querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        updateNav();
+      });
+    });
+  });
+
+  // Multi-select options
+  document.getElementById('q4-options')?.querySelectorAll('.option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      opt.classList.toggle('selected');
+      updateNav();
+    });
+  });
+
+  // Input listeners
+  document.getElementById('q1').addEventListener('input', updateNav);
+  document.getElementById('q2-custom').addEventListener('input', updateNav);
+
+  function showStep(n) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    const isResult = n > TOTAL;
+    if (isResult) {
+      document.getElementById('step-result').classList.add('active');
+      document.getElementById('nav-buttons').style.display = 'none';
+    } else {
+      document.getElementById(`step-${n}`).classList.add('active');
+      document.getElementById('nav-buttons').style.display = 'flex';
+    }
+    updateProgress();
+    updateNav();
+  }
+
+  function collectAnswer() {
+    if (current === 1) answers.task = document.getElementById('q1').value.trim();
+    if (current === 2) {
+      const sel = document.querySelector('#q2-options .option.selected');
+      const custom = document.getElementById('q2-custom').value.trim();
+      answers.role = custom || sel?.dataset.value || '';
+    }
+    if (current === 3) answers.audience = document.querySelector('#q3-options .option.selected')?.dataset.value || '';
+    if (current === 4) {
+      const selected = [...document.querySelectorAll('#q4-options .option.selected')].map(o => o.dataset.value);
+      answers.format = selected.join(', ');
+    }
+    if (current === 5) answers.tone = document.querySelector('#q5-options .option.selected')?.dataset.value || '';
+    if (current === 6) answers.length = document.querySelector('#q6-options .option.selected')?.dataset.value || '';
+    if (current === 7) answers.context = document.getElementById('q7').value.trim();
+  }
+
+  function next() {
+    collectAnswer();
+    if (current === TOTAL) {
+      generatePrompt();
+      showStep(TOTAL + 1);
+    } else {
+      current++;
+      showStep(current);
+    }
+  }
+
+  function back() {
+    if (current > 1) {
+      current--;
+      showStep(current);
+    }
+  }
+
+  function generatePrompt() {
+    const { task, role, audience, format, tone, length, context } = answers;
+
+    let prompt = '';
+
+    prompt += `Du bist ein ${role}.\n\n`;
+    prompt += `## Aufgabe\n${task}\n\n`;
+    prompt += `## Zielgruppe\nDer Output ist ${audience}.\n\n`;
+    prompt += `## Format\nBitte antworte ${format}.\n\n`;
+    prompt += `## Ton\nDer Ton soll ${tone} sein.\n\n`;
+    prompt += `## Länge\nDer Output soll ${length} sein.\n`;
+
+    if (context) {
+      prompt += `\n## Wichtige Infos & Besonderheiten\n${context}\n`;
+    }
+
+    document.getElementById('result-text').textContent = prompt;
+  }
+
+  function copyPrompt() {
+    const text = document.getElementById('result-text').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('copy-btn');
+      btn.textContent = '✓ Kopiert!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Prompt kopieren';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+
+  function restart() {
+    current = 1;
+    Object.keys(answers).forEach(k => delete answers[k]);
+    document.getElementById('q1').value = '';
+    document.getElementById('q2-custom').value = '';
+    document.getElementById('q7').value = '';
+    document.querySelectorAll('.option.selected').forEach(o => o.classList.remove('selected'));
+    document.getElementById('nav-buttons').style.display = 'flex';
+    showStep(1);
+  }
+
+  updateProgress();
+  updateNav();
+</script>
+</body>
+</html>
