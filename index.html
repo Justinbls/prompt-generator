@@ -18,6 +18,73 @@
       padding: 20px;
     }
 
+    #lock-screen {
+      position: fixed;
+      inset: 0;
+      background: #0f0f0f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      padding: 20px;
+    }
+
+    #lock-screen.hidden { display: none; }
+
+    .lock-box {
+      width: 100%;
+      max-width: 340px;
+      text-align: center;
+    }
+
+    .lock-icon {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+
+    .lock-box h2 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .lock-box p {
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 24px;
+    }
+
+    #pw-input {
+      width: 100%;
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      color: #f0f0f0;
+      font-size: 1.1rem;
+      padding: 14px 16px;
+      outline: none;
+      text-align: center;
+      letter-spacing: 3px;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+
+    #pw-input:focus { border-color: #6366f1; }
+    #pw-input.error { border-color: #ef4444; animation: shake 0.3s; }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-8px); }
+      75% { transform: translateX(8px); }
+    }
+
+    #pw-error {
+      color: #ef4444;
+      font-size: 0.85rem;
+      margin-top: 10px;
+      min-height: 20px;
+    }
+
     .container {
       width: 100%;
       max-width: 620px;
@@ -220,6 +287,17 @@
   </style>
 </head>
 <body>
+<div id="lock-screen">
+  <div class="lock-box">
+    <div class="lock-icon">🔒</div>
+    <h2>Prompt Generator</h2>
+    <p>Bitte Passwort eingeben</p>
+    <input type="password" id="pw-input" placeholder="••••••" autofocus
+      onkeydown="if(event.key==='Enter') checkPassword()" />
+    <div id="pw-error"></div>
+  </div>
+</div>
+
 <div class="container">
   <div class="header">
     <h1>Prompt Generator</h1>
@@ -338,6 +416,32 @@
 </div>
 
 <script>
+  // Password protection
+  const PW_HASH = '1a748566f86c5d724a8c1af3dd90a3e9b21aa44b'; // SHA1 of "Ben"
+
+  async function sha1(str) {
+    const buf = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  async function checkPassword() {
+    const val = document.getElementById('pw-input').value;
+    const hash = await sha1(val);
+    if (hash === PW_HASH) {
+      sessionStorage.setItem('auth', '1');
+      document.getElementById('lock-screen').classList.add('hidden');
+    } else {
+      const input = document.getElementById('pw-input');
+      input.classList.add('error');
+      document.getElementById('pw-error').textContent = 'Falsches Passwort';
+      setTimeout(() => { input.classList.remove('error'); input.value = ''; }, 600);
+    }
+  }
+
+  if (sessionStorage.getItem('auth') === '1') {
+    document.getElementById('lock-screen').classList.add('hidden');
+  }
+
   const TOTAL = 7;
   let current = 1;
   const answers = {};
